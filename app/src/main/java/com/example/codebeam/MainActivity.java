@@ -24,7 +24,7 @@ import android.widget.Toast;
  * a code to another phone.
  *
  * @author Tomer Ben Ari
- * @version 0.2.1
+ * @version 1.0.0
  * @since 0.2.0 (09/01/2020)
  */
 
