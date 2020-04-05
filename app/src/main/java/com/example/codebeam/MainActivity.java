@@ -9,24 +9,23 @@ import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
-import android.nfc.tech.Ndef;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-
 
 /**
- * @author Tomer Ben Ari
- * @version 0.2.0
- * @since 0.2.0 (09/01/2020)
+ * <h1>Main Activity</h1>
  *
- * Main Activity
+ * The only activity of the application
+ * where the user can choose to beam
+ * a code to another phone.
+ *
+ * @author Tomer Ben Ari
+ * @version 0.2.1
+ * @since 0.2.0 (09/01/2020)
  */
 
 public class MainActivity extends AppCompatActivity implements NfcAdapter.CreateNdefMessageCallback {
@@ -50,6 +49,11 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Create
     NfcAdapter nfcAdapter;
     AlertDialog.Builder adb;
 
+    /**
+     * On activity create: connects widgets to their view in xml.
+     *
+     * @param savedInstanceState Containing the activity's previously saved state.
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,15 +64,20 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Create
 
         adapter = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item,codeArray);
         spinner_codes.setAdapter(adapter);
-
-        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
     }
 
+    /**
+     * On activity resume:
+     * <br>checks if NFC and Android Beam is enabled in the phone:
+     * if false creates a dialog to open NFC settings,
+     * if true sets a callback that dynamically generates NDEF messages to send using Android Beam.
+     */
 
     @Override
     protected void onResume() {
         super.onResume();
 
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if(nfcAdapter != null && nfcAdapter.isEnabled() && nfcAdapter.isNdefPushEnabled()){
             nfcAdapter.setNdefPushMessageCallback(this, this);
         }
@@ -101,10 +110,11 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Create
     }
 
     /**
-     * Sends Ndef message via NFC
+     * Called to provide a NdefMessage to push.
      *
-     * @param event
-     * @return Message to send via NFC
+     * @param event NfcEvent with the
+     *              NfcEvent#nfcAdapter(The NfcAdapter associated with the NFC event) field set.
+     * @return NDEF Message to push.
      */
 
     @Override
